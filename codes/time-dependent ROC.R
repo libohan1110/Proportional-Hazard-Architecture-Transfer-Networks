@@ -1,0 +1,51 @@
+#setwd("C:\\Users\\daidai\\Desktop\\?ӹ???Ĥ??λ\\merge\\new")
+library(timeROC)
+library(survival)
+rt<-read.csv("train_total_ROC.csv",header=T,row.names=1,sep=",")
+ROC1<-timeROC(T=rt$T,
+                           delta=rt$fustat,marker=rt$PH,
+                           cause=1,weighting="marginal",
+                           times=quantile(rt$T,probs=seq(0.2,0.8,0.1)),
+                           iid=TRUE)
+confint(ROC1)$CI_AUC
+ROC1$AUC
+ROC2<-timeROC(T=rt$T,
+                     delta=rt$fustat,marker=rt$model,
+                     cause=1,weighting="marginal",
+                     times=quantile(rt$T,probs=seq(0.2,0.8,0.1)),
+                     iid=TRUE)
+confint(ROC2)$CI_AUC
+ROC2$AUC
+ROC3<-timeROC(T=rt$T,
+              delta=rt$fustat,marker=rt$AFS,
+              cause=1,weighting="marginal",
+              times=quantile(rt$T,probs=seq(0.2,0.8,0.1)),
+              iid=TRUE)
+confint(ROC3)$CI_AUC
+ROC3$AUC
+ROC4<-timeROC(T=rt$T,
+              delta=rt$fustat,marker=rt$CSGE,
+              cause=1,weighting="marginal",
+              times=quantile(rt$T,probs=seq(0.2,0.8,0.1)),
+              iid=TRUE)
+confint(ROC4)$CI_AUC
+ROC4$AUC
+ROC5<-timeROC(T=rt$T,
+              delta=rt$fustat,marker=rt$Endometrial.thickness,
+              cause=1,weighting="marginal",
+              times=quantile(rt$T,probs=seq(0.2,0.8,0.1)),
+              iid=TRUE)
+confint(ROC5)$CI_AUC
+ROC5$AUC
+compare(ROC1,ROC2,adjusted=TRUE)
+compare(ROC1,ROC3,adjusted=TRUE)
+compare(ROC1,ROC4,adjusted=TRUE)
+compare(ROC1,ROC5,adjusted=TRUE)
+# # plot AUC curve for albumin and bilirunbin  with pointwise confidence intervals
+plotAUCcurve(ROC1,conf.int=TRUE,col="red")
+plotAUCcurve(ROC2,conf.int=TRUE,col="blue",add=TRUE)
+plotAUCcurve(ROC3,conf.int=TRUE,col="green",add=TRUE)
+plotAUCcurve(ROC4,conf.int=TRUE,col="yellow",add=TRUE)
+plotAUCcurve(ROC5,conf.int=TRUE,col="orange",add=TRUE)
+legend(locator(n=1),c("ResNet50PH","ResNet50","AFS","CSGE","Endometrial thickness"),col=c("red","blue","green","yellow","orange"),lty=1,lwd=2)
+abline(v=12,lwd=2,lty=2,col="red")
